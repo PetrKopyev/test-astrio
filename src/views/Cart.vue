@@ -3,7 +3,7 @@
       class="cart"
   >
     <h2 class="title">Shopping Cart</h2>
-    <div v-if="TotalPositions > 0">
+    <div v-if="cartItemsQty > 0">
       <table>
         <thead>
         <tr>
@@ -31,8 +31,18 @@
               <div class="item-info">
                 <span>Brand {{ item.brand }}</span>
                 <span>{{ item.title }}</span>
-                <span class="item-info_small" v-if="item.color">Color: {{ item.color }}</span>
-                <span class="item-info_small" v-if="item.size">Size: {{ item.size }}</span>
+                <span
+                    class="item-info_small"
+                    v-if="item.color"
+                >
+                  Color: {{ item.color }}
+                </span>
+                <span
+                    class="item-info_small"
+                    v-if="item.size"
+                >
+                  Size: {{ item.size }}
+                </span>
               </div>
             </div>
           </td>
@@ -47,7 +57,7 @@
                 size="mini"
                 v-model="item.qt"
                 controls-position="right"
-                @change="changeQt()"
+                @change="changeQt"
                 :min="1"
             ></el-input-number>
           </td>
@@ -108,7 +118,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('cart', ["cart", "TotalPositions", "Total"]),
+    ...mapGetters('cart', ["cart", "cartItemsQty", "Total"]),
   },
 }
 </script>

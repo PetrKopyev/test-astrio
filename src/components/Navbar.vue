@@ -21,10 +21,10 @@
           class="navbar_cart-img"
       >
       <span
-          v-if="TotalPositions >= 1"
+          v-if="cartItemsQty >= 1"
           class="navbar-counter"
       >
-        {{ TotalPositions }}
+        {{ cartItemsQty }}
       </span>
     </router-link>
   </div>
@@ -36,7 +36,7 @@ import {mapGetters} from "vuex";
 export default {
   name: "Navbar",
   computed: {
-    ...mapGetters('cart', ["TotalPositions"]),
+    ...mapGetters('cart', ["cartItemsQty"]),
     isRouteCart() {
       return (this.$route.name === 'Cart')
     }

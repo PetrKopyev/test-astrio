@@ -4,12 +4,19 @@ export default {
     namespaced: true,
     state: {
         cart: {},
-        TotalPositions: 0,
+        cartItemsQty: 0,
         Total: 0
     },
     mutations: {
         ADD_ITEM: (state, item) => {
-            state.TotalPositions++;
+            state.cartItemsQty++;
+            for (let i = 0; i < item.variants.length; i++) {
+                if (item.variants[i].attributes[0].value_index === item.colorId &&
+                    item.variants[i].attributes[1].value_index === item.sizeId) {
+                    item.id = item.variants[i].product.id;
+                }
+            }
+
             if (item.id in state.cart) {
                 state.cart[item.id].qt++;
             } else {
@@ -17,16 +24,17 @@ export default {
                 stateItem.qt = 1;
                 state.cart[item.id] = stateItem;
             }
+
             state.Total = calculateAmount(state.cart);
         },
 
         REMOVE_ITEM: (state, item) => {
             delete state.cart[item];
             state.Total = calculateAmount(state.cart);
-            state.TotalPositions = calculateTotal(state.cart);
+            state.cartItemsQty = calculateTotal(state.cart);
         },
         CHANGE_QT: state => {
-            state.TotalPositions = calculateTotal(state.cart);
+            state.cartItemsQty = calculateTotal(state.cart);
             state.Total = calculateAmount(state.cart);
         },
     },
@@ -38,7 +46,7 @@ export default {
     getters: {
         cart: ({cart}) => cart,
         Total: ({Total}) => Total,
-        TotalPositions: ({TotalPositions}) => TotalPositions,
+        cartItemsQty: ({cartItemsQty}) => cartItemsQty,
     },
 
 }

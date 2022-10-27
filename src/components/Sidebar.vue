@@ -7,19 +7,19 @@
       >
         All Brands
       </h3>
+
       <div class="sidebar-brands">
         <div
             class="sidebar-brands_item sidebar-link"
             v-for="brand in brands"
             :key="brand.id"
-
         >
           <span
               @click="pickedBrand(brand)"
               :class="{'activeBrand' : selectedBrand === brand}"
           >
-            {{ brand.title }}</span>
-
+            {{ brand.title }}
+          </span>
         </div>
       </div>
     </div>
