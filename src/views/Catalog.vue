@@ -3,7 +3,14 @@
     <Sidebar/>
     <div>
       <h2 class="title">Catalog</h2>
-      <CatalogItem class="catalog-list"/>
+      <div class="catalog-list">
+        <CatalogItem
+            v-for="product in filteredProducts"
+            :key="product.id"
+            :product="product"
+        />
+      </div>
+
     </div>
   </div>
 </template>
@@ -11,12 +18,16 @@
 <script>
 import Sidebar from "@/components/Sidebar";
 import CatalogItem from "@/components/CatalogItem";
+import {mapGetters} from "vuex";
 
 export default {
   name: 'Home',
   components: {
     CatalogItem,
     Sidebar
+  },
+  computed: {
+    ...mapGetters('brands', ['filteredProducts']),
   },
 }
 </script>

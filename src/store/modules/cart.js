@@ -10,7 +10,7 @@ export default {
     mutations: {
         ADD_ITEM: (state, item) => {
             state.cartItemsQty++;
-            for (let i = 0; i < item.variants.length; i++) {
+            for (let i = 0; i < item.variants?.length; i++) {
                 if (item.variants[i].attributes[0].value_index === item.colorId &&
                     item.variants[i].attributes[1].value_index === item.sizeId) {
                     item.id = item.variants[i].product.id;

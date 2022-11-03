@@ -1,10 +1,6 @@
 <template>
   <div>
-    <div
-        class="catalog-item"
-        v-for="product in filteredProducts"
-        :key="product.id"
-    >
+    <div class="catalog-item">
       <div v-if="product.color">
         <img
             :src="require(`@/assets${product.img}`)"
@@ -20,7 +16,6 @@
             class="catalog-item_img"
         >
       </div>
-
       <h3>{{ product.title }}</h3>
       <span>Brand {{ product.brand }}</span>
       <span>{{ currency(product.regular_price.currency) }}{{ product.regular_price.value }}</span>
@@ -99,8 +94,8 @@
 </template>
 
 <script>
-import {currency} from "@/functions";
-import {mapActions, mapGetters} from "vuex";
+import {currency, pickedItem} from "@/functions";
+import {mapActions} from "vuex";
 
 export default {
   name: "CatalogItem",
@@ -109,8 +104,13 @@ export default {
       currency: currency,
     }
   },
-  computed: {
-    ...mapGetters('brands', ['filteredProducts']),
+  props: {
+    product: {
+      type: Object,
+      default() {
+        return {}
+      }
+    }
   },
   methods: {
     ...mapActions('cart', ['addToItems']),
@@ -125,34 +125,11 @@ export default {
     },
 
     pickedSize(size, product) {
-      let sizeName = ''
-      switch (size.value_index) {
-        case 1441:
-          sizeName = 'M'
-          break
-        case 1442:
-          sizeName = 'L'
-          break
-      }
-      this.$set(product, 'size', sizeName)
+      this.$set(product, 'size', size.label)
       product.sizeId = size.value_index
 
-      let colors = []
-      product.variants.forEach(item => {
-        if (size.value_index === item.attributes[1].value_index) {
-          colors.push(item.attributes[0].value_index)
-        }
-      })
-
-      let colorObjects = colors.map(item => {
-        for (let i = 0; i < product.configurable_options[0].values.length; i++) {
-          if (item === product.configurable_options[0].values[i].value_index) {
-            return item = product.configurable_options[0].values[i]
-          }
-        }
-      })
-
-      this.$set(product, 'colors', colorObjects)
+      let colors = pickedItem(1, 0, size, product)
+      this.$set(product, 'colors', colors)
     },
 
     isActiveSize(size, product) {
@@ -160,37 +137,12 @@ export default {
     },
 
     pickedColor(color, product) {
-      let colorName = ''
-      switch (color.value_index) {
-        case 931:
-          colorName = 'red'
-          break
-        case 932:
-          colorName = 'blue'
-          break
-        case 933:
-          colorName = 'black'
-          break
-      }
-      this.$set(product, 'color', colorName)
+      this.$set(product, 'color', color.label)
       product.colorId = color.value_index
 
-      let sizes = []
-      product.variants.forEach(item => {
-        if (product.colorId === item.attributes[0].value_index) {
-          sizes.push(item.attributes[1].value_index)
-        }
-      })
+      let sizes = pickedItem(0, 1, color, product)
+      this.$set(product, 'sizes', sizes)
 
-      let sizeObjects = sizes.map(item => {
-        for (let i = 0; i < product.configurable_options[1].values.length; i++) {
-          if (item === product.configurable_options[1].values[i].value_index) {
-            return item = product.configurable_options[1].values[i]
-          }
-        }
-      })
-
-      this.$set(product, 'sizes', sizeObjects)
       this.changeImageIfPickedColor(product)
     },
 
@@ -218,6 +170,7 @@ export default {
     box-shadow: 0 0 8px 0 #e0e0e0;
     padding: 15px;
     border-radius: 10px;
+    height: 100%;
 
     & h3 {
       font-size: 2vw;

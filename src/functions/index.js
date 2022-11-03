@@ -25,4 +25,22 @@ const currency = (cur) => {
   return value
 }
 
-export { calculateAmount, calculateTotal, currency };
+const pickedItem = (id1, id2, value, product) => {
+  let valueItems = []
+  product.variants.forEach(item => {
+    if (value.value_index === item.attributes[id1].value_index) {
+      valueItems.push(item.attributes[id2].value_index)
+    }
+  })
+
+  return valueItems.map(item => {
+    for (let i = 0; i < product.configurable_options[id2].values.length; i++) {
+      if (item === product.configurable_options[id2].values[i].value_index) {
+        return item = product.configurable_options[id2].values[i]
+      }
+    }
+  })
+}
+
+
+export { calculateAmount, calculateTotal, currency, pickedItem };
